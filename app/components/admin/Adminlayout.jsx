@@ -1,6 +1,6 @@
 "use client"
 import React, { useState } from 'react';
-import Layout from './addproduct/layout';
+import Layout from './addproduct/Layout';
 import Productname from './addproduct/Productname';
 import Category from './addproduct/Category';
 import Priceinput from './addproduct/Priceinput';

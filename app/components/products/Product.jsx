@@ -6,7 +6,7 @@ import { BiMailSend } from "react-icons/bi";
 import useModalStore from "@/hooks/Enquirymodal";
 import styles from '../styles/popularproducts.module.css'
 import { useRouter } from "next/navigation";
-import AnimatedElement from "../Animatedelement";
+import AnimatedElement from "../AnimatedElement";
 
 const Product = ({ productId, image, name, size, finish, price, colors, category }) => {
     const router = useRouter()
