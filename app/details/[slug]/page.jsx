@@ -159,7 +159,7 @@ const page = ({ params }) => {
                                     <div>
                                         <div className="flex flex-wrap -mb-2">
                                             <div
-                                                className="px-4 py-2 mb-2 mr-4 font-semibold border rounded-md text-gray-400">
+                                                className="px-4 py-2 mb-2 mr-4 font-semibold border rounded-md text-gray-600">
                                                 {data.product_size}
                                             </div>
                                         </div>

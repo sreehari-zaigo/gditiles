@@ -11,7 +11,7 @@ const useModalStore = create((set) => ({
       let { name, email, phoneNumber, noshowFormAgain } = showform
       if (noshowFormAgain) {
         let data;
-        if (typeof productid == string) {
+        if (typeof productid == String) {
           data = { name, email, phoneNumber, productid: productid }
         } else {
           data = { name, email, phoneNumber }
@@ -21,7 +21,7 @@ const useModalStore = create((set) => ({
           body: JSON.stringify(data),
         });
         if (response.ok) {
-          toast.success('Enquery submitted', {
+          toast.success('Enquery submitted!', {
             position: "bottom-center",
             autoClose: 5000,
             hideProgressBar: false,

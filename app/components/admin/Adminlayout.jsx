@@ -42,6 +42,9 @@ const Adminlayout = () => {
         if (formData.product_category_id == "") {
             errors.product_category_id = 'Please select the category';
         }
+        if (formData.product_colors.length==0) {
+            errors.product_colors = 'Product color is required';
+        }
         setErrors(errors);
         return errors;
     };
