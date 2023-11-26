@@ -5,6 +5,7 @@ import { NextResponse } from "next/server";
 
 export const GET = async (req) => {
     try {
+        console.log("GetProducts..........")
         const { searchParams } = new URL(req.url);
         const page = searchParams.get("page");
         const filterBy = searchParams.get("filterBy");
@@ -27,7 +28,7 @@ export const GET = async (req) => {
                 }, { status: 200 })
             );
         }
-        let pageSize = 5;
+        let pageSize = 3;
         const skip = (page - 1) * pageSize;
         let productsQuery = {
             skip,

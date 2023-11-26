@@ -3,7 +3,8 @@
 import { Button, Input, Spinner } from "@nextui-org/react";
 import { useMemo, useState } from "react";
 import { LuTrash2 } from "react-icons/lu";
-import useSWR from "swr";
+import { toast } from "react-toastify";
+import useSWR, { mutate } from "swr";
 const fetcher = async (url) => {
   const res = await fetch(url);
 
@@ -38,9 +39,38 @@ export default function CategoryInput({ onClose }) {
       method: "POST",
       body: JSON.stringify({ value }),
     });
-    // mutate();
+    mutate(`/api/categories`);
   };
-
+  const deleteCat = async (id) => {
+    let res = await fetch(`/api/categories/${id}`, {
+      method: "DELETE",
+    });
+    if (res.ok) {
+      setValue("")
+      toast.success(`Category and related products deleted successfully!`, {
+        position: "bottom-center",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+      mutate(`/api/categories`);
+      return
+    }
+    toast.error(`Some thing went wrong!`, {
+      position: "bottom-center",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+    });
+  }
   return (
     <>
       <Input
@@ -61,14 +91,14 @@ export default function CategoryInput({ onClose }) {
       </Button>
       <div className="py-6 flex flex-col gap-4">
         <p className="text-gray-800 font-semibold text-base">Category list</p>
-        {isLoading && <Spinner color='warning' size='md'/>}
+        {isLoading && <Spinner color='warning' size='md' />}
         {isError && <p>Error loading data</p>}
         {data && (
           data.map((cat) => (
             <div className="flex justify-between items-center border-b-1" key={cat.id}>
               <h2 className="text-gray-700 text-base font-medium">{cat.category_name}</h2>
               <div className="hover: cursor-pointer">
-                <LuTrash2 className="text-red-500 text-lg hover:scale-110" />
+                <LuTrash2 className="text-red-500 text-lg hover:scale-110" onClick={() => deleteCat(cat.id)} />
               </div>
             </div>
           ))

@@ -31,9 +31,11 @@ const Popularproducts = () => {
         fetchData();
     }, [page]);
     if (items.length == 0) {
-        <div className="light text-foreground bg-background mx-auto h-[100vh] max-w-[90%] lg:px-12 grid place-content-center">
-            <Spinner size='lg' color='warning' />
-        </div>
+        return (
+            <div className="light text-foreground bg-background mx-auto h-[100vh] max-w-[90%] lg:px-12 grid place-content-center">
+                <Spinner size='lg' color='warning' />
+            </div>
+        )
     }
     return (
         <div className="mx-auto max-w-[95%] lg:max-w-[100%] lg:mt-20 mt-10">

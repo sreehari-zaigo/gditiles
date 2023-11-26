@@ -7,6 +7,8 @@ import Sendenquerybtn from "../Sendenquerybtn";
 import useSWR from "swr";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import AnimatedElement from "../AnimatedElement";
+import { navbarMenuItem } from "@/utils/motions";
 const fetcher = async (url) => {
     const res = await fetch(url);
 
@@ -30,10 +32,25 @@ const Navbarmenu = () => {
     const pathname = usePathname()
     const menuItems = [
         { title: "Home", path: "/" },
-        { title: "Products", path: "/product/All" },
+        { title: "Products", path: "/products/All" },
         { title: "Contact us", path: "/contact" },
         { title: "About us", path: "/about" },
     ];
+    const variants = {
+        visible: {
+            y: 0,
+            opacity: 1,
+            transition: {
+                y: { stiffness: 1000, velocity: -100 },
+                delay: 0.2,
+                duration: 0.5,
+            }
+        },
+        hidden: {
+            y: 50,
+            opacity: 0,
+        }
+    };
     return (
         <Navbar onMenuOpenChange={setIsMenuOpen} isBordered className="bg-slate-50">
             <NavbarContent justify="start">
@@ -103,16 +120,16 @@ const Navbarmenu = () => {
             <NavbarMenu>
                 {menuItems.map((item, index) => (
                     <NavbarMenuItem key={`${item.title}-${index}`}>
-                        <Link
-                            color={
-                                index === 2 ? "primary" : index === menuItems.length - 1 ? "danger" : "foreground"
-                            }
-                            className="w-full"
-                            href={item.path}
-                            size="lg"
-                        >
-                            {item.title}
-                        </Link>
+                        <AnimatedElement animationProperties={navbarMenuItem(0.2 * index)}>
+                            <Link
+                                color="text_orange"
+                                className="w-full text_orange"
+                                href={item.path}
+                                size="lg"
+                            >
+                                {item.title}
+                            </Link>
+                        </AnimatedElement>
                     </NavbarMenuItem>
                 ))}
             </NavbarMenu>

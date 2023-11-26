@@ -1,7 +1,6 @@
 // modalStore.js
 import { create } from 'zustand';
 import { toast } from 'react-toastify';
-import { string } from 'yup';
 
 const useModalStore = create((set) => ({
   isOpen: false,

@@ -26,13 +26,6 @@ export const POST = async (req) => {
 
     try {
         const body = await req.json();
-        console.log(body, "catego")
-        //   const comment = await prisma.comment.create({
-        //     data: { ...body, userEmail: session.user.email },
-        //   });
-
-
-
         const newCategory = await prisma.category.create({
             data: {
                 category_name: body.value,

@@ -23,7 +23,6 @@ export const GET = async (req, { params }) => {
 
 export const DELETE = async (req, { params }) => {
   const { slug } = params;
-  console.log(slug)
   try {
     const deletedProduct = await prisma.product.delete({
       where: {

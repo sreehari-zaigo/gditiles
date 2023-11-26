@@ -10,13 +10,11 @@ import { Button, useDisclosure } from '@nextui-org/react';
 import useModal from '@/hooks/modal';
 import Modallayout from '../modal/Modal';
 import CategoryInput from './addcategory/Categorymodal';
-import { useForm } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
-import { addproductValidationschema } from '@/validations/addproductvalidations';
 import { Authinputs } from './Input';
 import useFormStore from '@/hooks/Collectformdata';
 import { toast } from 'react-toastify';
 import { useRouter } from 'next/navigation';
+
 
 
 const Adminlayout = () => {
@@ -83,6 +81,7 @@ const Adminlayout = () => {
                     theme: "light",
                 });
                 router.push('/gdiadmin')
+                useFormStore.getState().clearFormData();
             }
         } catch (error) {
             toast.error('Some thing went wrong!', {

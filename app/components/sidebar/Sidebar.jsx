@@ -1,9 +1,7 @@
 "use client"
 import Image from "next/image";
 import { AiOutlineHome } from "react-icons/ai";
-import { BsPeople } from "react-icons/bs";
-import { TiContacts } from "react-icons/ti";
-import { FiMail } from "react-icons/fi";
+import { MdListAlt } from "react-icons/md";
 import { MdKeyboardArrowLeft, MdKeyboardArrowRight,MdOutlineDashboardCustomize } from "react-icons/md";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -13,17 +11,17 @@ const sidebarItems = [
     {
         name: "Product list",
         href: "/gdiadmin",
-        icon: MdOutlineDashboardCustomize,
+        icon: MdListAlt,
     },
     {
         name: "Add product",
         href: "/gdiadmin/addproduct",
-        icon: AiOutlineHome,
+        icon: MdOutlineDashboardCustomize,
     },
     {
         name: "Home",
         href: "/",
-        icon: BsPeople,
+        icon: AiOutlineHome ,
     },
     // {
     //     name: "Mails",

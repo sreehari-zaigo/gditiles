@@ -1,81 +1,44 @@
-import React, { useCallback, useEffect, useState } from "react";
-import useSWR from "swr";
-import { Table, TableHeader, TableColumn, TableBody, TableRow, TableCell, Chip, Tooltip, getKeyValue, Spinner, Switch } from "@nextui-org/react";
-import InfiniteScroll from 'react-infinite-scroll-component';
+import React, { useCallback, useEffect, useMemo, useState } from "react";
+import useSWR, { mutate } from "swr";
+import { Table, TableHeader, TableColumn, TableBody, TableRow, TableCell, Chip, Tooltip, getKeyValue, Spinner, Switch, Pagination } from "@nextui-org/react";
 import { EditIcon } from "./Editicon";
 import { DeleteIcon } from "./DeteIcon";
 import { toast } from "react-toastify";
 
-const fetcher = async (url) => {
-    const res = await fetch(url);
-    const data = await res.json();
-    if (!res.ok) {
-        const error = new Error(data.message);
-        throw error;
-    }
-    return data;
-};
-
-
+const fetcher = (...args) => fetch(...args).then((res) => res.json());
 const ProductList = () => {
     const [page, setPage] = useState(1);
     const [hasMore, setHasmore] = useState(true)
-    const { data, error, isValidating, mutate } = useSWR(
-        `/api/product?page=${page}`,
-        fetcher
-    );
+    const { data, isLoading } = useSWR(`/api/product?page=${page}`, fetcher, {
+        keepPreviousData: true,
+    });
 
+    const rowsPerPage = 3;
 
-    useEffect(() => {
-        if (error) {
-            console.error('Failed to fetch data:', error);
-        }
-    }, [error]);
 
     const deleteProduct = async (productId) => {
         try {
             await fetch(`/api/product/${productId}`, {
                 method: 'DELETE',
             });
-            setPage(0)
-            fetchMoreData()
-            toast.success('Deleted successfully');
-            // mutate(`/api/product?page=${page}`);
+            mutate(`/api/product?page=${page}`);
         } catch (error) {
             console.error('Failed to delete product:', error);
         }
     };
-    if (!data && isValidating) {
-        return <Spinner />;
-    }
-    const { products } = data || {};
 
-    const fetchMoreData = async () => {
-        setPage((page) => page + 1);
-        try {
-            const newData = await fetcher(`/api/product?page=${page}`);
+    const pages = useMemo(() => {
+        return data?.totalProducts ? Math.ceil(data.totalProducts / rowsPerPage) : 0;
+    }, [data?.totalProducts, rowsPerPage]);
 
-            if (newData.products.length === 0) {
-                setHasmore(false);
-            } else {
-                // mutate(
-                //     `/api/product?page=${page}`,
-                //     { ...data, products: [...data.products, ...newData.products] },
-                //     false
-                // );
-            }
-        } catch (error) {
-            console.error('Failed to fetch more data:', error);
-        }
-    };
+    const loadingState = isLoading || data?.products.length === 0 ? "loading" : "idle";
+
     const changePopularProductStatus = async (id, state, key) => {
         try {
             await fetch(`/api/product/${id}?fn=${key}&state=${state}`, {
                 method: 'PUT',
             });
-            // mutate(`/api/product?page=${page}`);
-            setPage(0)
-            fetchMoreData()
+            mutate(`/api/product?page=${page}`);
             toast.success('Product status updated successfully');
         } catch (error) {
             toast.error('Failed to update product status:');
@@ -141,29 +104,40 @@ const ProductList = () => {
 
     return (
         <div className='mt-24'>
-            <InfiniteScroll
-                dataLength={products?.length}
-                next={fetchMoreData}
-                hasMore={hasMore}
-            // loader={<Spinner size="lg" />}
+            <Table aria-label="Example table with custom cells"
+                bottomContent={
+                    pages > 0 ? (
+                        <div className="flex w-full justify-center">
+                            <Pagination
+                                isCompact
+                                showControls
+                                showShadow
+                                color="primary"
+                                page={page}
+                                total={pages}
+                                onChange={(page) => setPage(page)}
+                            />
+                        </div>
+                    ) : null
+                }
+            // {...args}
             >
-                <Table aria-label="Example table with custom cells">
-                    <TableHeader columns={columns}>
-                        {(column) => (
-                            <TableColumn key={column.uid} align={column.uid === "actions" ? "center" : "start"}>
-                                {column.name}
-                            </TableColumn>
-                        )}
-                    </TableHeader>
-                    <TableBody items={products} emptyContent={"No product to display."}>
-                        {(item) => (
-                            <TableRow key={item.id}>
-                                {(columnKey) => <TableCell>{renderCell(item, columnKey)}</TableCell>}
-                            </TableRow>
-                        )}
-                    </TableBody>
-                </Table>
-            </InfiniteScroll>
+                <TableHeader columns={columns}>
+                    {(column) => (
+                        <TableColumn key={column.uid} align={column.uid === "actions" ? "center" : "start"}>
+                            {column.name}
+                        </TableColumn>
+                    )}
+                </TableHeader>
+                <TableBody items={data?.products ?? []} loadingContent={<Spinner />}
+                    loadingState={loadingState} emptyContent={"No product to display."}>
+                    {(item) => (
+                        <TableRow key={item.id}>
+                            {(columnKey) => <TableCell>{renderCell(item, columnKey)}</TableCell>}
+                        </TableRow>
+                    )}
+                </TableBody>
+            </Table>
         </div>
     );
 };
